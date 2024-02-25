@@ -18,7 +18,7 @@ function Booking() {
 
   return (
     <div className='p-5 '>
-        <h2 className='text-[20px] font-semibold'>Booking - Theekshana Git Test</h2>
+        <h2 className='text-[20px] font-semibold'>Booking - Git Test</h2>
         <div className='border-[1px] p-5 
         rounded-md' >
         <AutocompleteAddress/>
