@@ -35,7 +35,7 @@ export default function Home() {
      <div className='grid grid-cols-1 
      md:grid-cols-3'>
         <div className=''>
-          <Booking/>
+          <Booking userlocation={userLocation}/>
         </div>
         <div className='col-span-2
         '>

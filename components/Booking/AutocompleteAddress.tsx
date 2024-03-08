@@ -6,7 +6,8 @@ import { AddressAutofill } from '@mapbox/search-js-react';
 const session_token = '5ccce4a4-ab0a-4a7c-943d-580e55542363'
 const MAPBOX_RETRIVE_URL = 'https://api.mapbox.com/search/searchbox/v1/retrieve/'
 const MAPBOX_SUGGEST_URL = 'https://api.mapbox.com/search/searchbox/v1/suggest/'
-function AutocompleteAddress() {
+
+function AutocompleteAddress({onSourceSelect , onDestinationSelect}) {
 
     const [source, setSource] = useState<any>()
     const [sourceChange, setSourceChange] = useState<any>(false)
@@ -19,12 +20,28 @@ function AutocompleteAddress() {
     const [addressList, setAddressList] = useState<any>([]);
     const [destination, setDistination] = useState<any>()
 
+    // console.log({source});
+    // console.log({destination});
+
+
     useEffect(() => {
         const delayDebounceFn = setTimeout(() => {
             getAddressList()
         }, 1000)
         return () => clearTimeout(delayDebounceFn)
     }, [source, destination]);
+
+    const reverseGeo = async () => {
+        
+        const staticRes2 = await fetch(
+            `https://api.mapbox.com/geocoding/v5/mapbox.places/6.8862328,79.8652778.json?access_token=pk.eyJ1Ijoic2hhZGVlciIsImEiOiJjbHJmeGV0ZWUwOGlwMmlvNjQzMGwwMzk4In0.a2oaT3-DeIvObA60H9Zo9g&session_token=facd2f7f-7922-4f6c-9524-af0ff3a6ce9e`
+        );
+
+        const result = await staticRes2.json();
+        console.log('reverse geo', result);
+        // setAddressList(result)
+
+    }
 
 
     const getAddressList = async () => {
@@ -61,8 +78,9 @@ function AutocompleteAddress() {
     }
 
     const onSourceAddressClick = async (item: any) => {
-        console.log({item});
-        setSource(item.full_address);
+        // console.log('sourceaddressclick', item);
+        setSource(item.name);
+        onSourceSelect(item.name);
         setAddressList([]); setSourceChange(false)
         const res = await fetch(MAPBOX_RETRIVE_URL + item.mapbox_id
             + "?session_token=" + session_token
@@ -79,9 +97,11 @@ function AutocompleteAddress() {
     }
 
     const onDestinationAddressClick = async (item: any) => {
-        setDistination(item.full_address);
+        setDistination(item.name);
+        onDestinationSelect(item.name);
         setAddressList([]);
         setDestinationChange(false)
+        reverseGeo();
         const res = await fetch(MAPBOX_RETRIVE_URL + item.mapbox_id
             + "?session_token=" + session_token
             + "&access_token=pk.eyJ1Ijoic2hhZGVlciIsImEiOiJjbHJmeGV0ZWUwOGlwMmlvNjQzMGwwMzk4In0.a2oaT3-DeIvObA60H9Zo9g")

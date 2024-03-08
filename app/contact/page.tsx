@@ -5,12 +5,12 @@ import AddContactForm from "@/components/contact/addContact";
 import { Contact } from "@prisma/client";
 
 async function fetchContacts() {
-    const response = await fetch("/api/search-address/db/get");
-    if (!response.ok) {
-      throw new Error(await response.text());
-    }
-    return response.json();
+  const response = await fetch("/api/search-address/db/get");
+  if (!response.ok) {
+    throw new Error(await response.text());
   }
+  return response.json();
+}
 
 async function saveContact(contact: any) {
   const response = await fetch("/api/db/save", {

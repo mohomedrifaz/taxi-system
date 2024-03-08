@@ -1,9 +1,11 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 
-import { PrismaClient, Prisma, Contact } from "@prisma/client";
+import { PrismaClient, Prisma, Contact, Driver, Trip } from "@prisma/client";
 
 const prisma = new PrismaClient();
-export async function GET(req: Request) {
-  const contact: Contact[] = await prisma.contact.findMany();
-  return Response.json({ contact });
+export async function GET(req: NextApiRequest, res: NextApiResponse) {
+  
+    const driver: Driver[] = await prisma.driver.findMany();
+    return Response.json({ driver });
+  
 }

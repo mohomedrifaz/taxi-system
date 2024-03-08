@@ -3,18 +3,26 @@ import CarsList from '@/data/CarsList'
 import Image from 'next/image'
 import React, { useContext, useState } from 'react'
 
-function Cars() {
+function Cars({ onCarSelection }) {
   const [selectedCar, setSelectedCar] = useState<any>()
   const { directionData, setDirectionData }
     = useContext(DirectionDataContext);
+
+
+  // console.log('seleged car', selectedCar);
+  // console.log('direction data', directionData);
+
+  const handleCarClick = (index, data) => {
+    setSelectedCar(index);
+    onCarSelection(index, data); // Invoke the onCarSelection function with the selected car index and data
+  };
+
 
   const getCost = (charges: any) => {
     return (charges * directionData.routes[0].distance * 0.000621371192)
       .toFixed(2)
   }
 
-  console.log('seleged car', selectedCar);
-  console.log('direction data', directionData);
   return (
     <div className='mt-3'>
       <h2 className='font-medium text-[14px] '>Select Car</h2>
@@ -31,7 +39,8 @@ function Cars() {
                  ${index == selectedCar
               ? 'border-yellow-400 border-[2px]'
               : null}`}
-            onClick={() => setSelectedCar(index)}>
+            onClick={() => handleCarClick(index, directionData)}
+          >
             <Image src={item.image}
               alt={item.name}
               width={75}
@@ -43,7 +52,7 @@ function Cars() {
                 <span className='float-right font-medium
                      text-slate'>
                   LKR{getCost(item.charges)}
-                  </span> : null}</h2>
+                </span> : null}</h2>
           </div>
         ))}
       </div>
