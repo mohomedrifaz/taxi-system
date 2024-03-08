@@ -21,6 +21,22 @@ function Booking({ userlocation }) {
   const { isLoaded, userId, sessionId, getToken } = useAuth();
   const { isSignedIn, user } = useUser();
 
+  const [manualRegistration, setManualRegistration] = useState(false);
+  const [passengerName, setPassengerName] = useState('');
+  const [passengerPhone, setPassengerPhone] = useState('');
+
+  const handleManualRegistrationToggle = () => {
+    setManualRegistration(!manualRegistration);
+  };
+
+  const handlePassengerNameChange = (event) => {
+    setPassengerName(event.target.value);
+  };
+
+  const handlePassengerPhoneChange = (event) => {
+    setPassengerPhone(event.target.value);
+  };
+
   console.log('user details', user);
 
   if (!isLoaded || !userId) {
@@ -38,8 +54,8 @@ function Booking({ userlocation }) {
   }, []);
 
   const handleBooking = () => {
-    setIsBooked(!isBooked);
-    console.log(`Booking status: ${!isBooked ? 'Booked' : 'Cancelled'}`);
+    setManualRegistration(false); // Reset manual registration when booking status changes
+    console.log(`Booking status: ${!manualRegistration ? 'Booked' : 'Cancelled'}`);
   };
 
 
@@ -87,6 +103,18 @@ function Booking({ userlocation }) {
     setDestination(selectedSource);
   };
 
+  const handleBookClick = async () => {
+    if (manualRegistration) {
+      await saveTrip({
+        ...tripDetails,
+        passengerName: passengerName,
+        passengerPhone: passengerPhone,
+      });
+    } else {
+      await saveTrip(tripDetails);
+    }
+  };
+
   useEffect(() => {
     setTripDetails(prevDetails => ({
       ...prevDetails,
@@ -110,15 +138,6 @@ function Booking({ userlocation }) {
   };
 
   console.log('trip', tripDetails);
-
-
-  // useEffect(() => {
-  //   // console.log('Selected car:', selectedCar);
-  //   console.log('Direction data:', directionDataA);
-  //   // console.log('Seleccted driver Data:', selectedDriver);
-  //   // console.log('Seleccted source:', source);
-  //   // console.log('Seleccted destination:', destination);
-  // }, [selectedDriver, source, destination]);
 
   const { directionData, setDirectionData } = useContext(DirectionDataContext);
 
@@ -178,16 +197,13 @@ function Booking({ userlocation }) {
       const responseData = await response.json();
       console.log('responseee', responseData);
       if (responseData.savedTrip.id) {
-        router.push(`/trip-confirmed/tripid=${responseData.savedTrip.id}`);
+        router.push(`/trip-confirmed?tripid=${responseData.savedTrip.id}`);
       }
     } catch (error) {
       console.error("Error saving driver:", error);
     }
   }
 
-  const handleBookClick = async () => {
-    await saveTrip(tripDetails);
-  };
 
   return (
     <div className='p-5 '>
@@ -197,8 +213,25 @@ function Booking({ userlocation }) {
         rounded-md' >
         <div className='flex flex-col my-2'>
           <span className='font-medium pb-2'>Manual registration</span>
-          <ToggleButton initialState={isBooked} onChange={handleBooking} />
+          <ToggleButton initialState={manualRegistration} onChange={handleManualRegistrationToggle} />
         </div>
+
+        {manualRegistration && (
+          <div className='flex flex-col my-2'>
+            <input
+              type='text'
+              placeholder='Passenger Name'
+              value={passengerName}
+              onChange={handlePassengerNameChange}
+            />
+            <input
+              type='tel'
+              placeholder='Passenger Phone'
+              value={passengerPhone}
+              onChange={handlePassengerPhoneChange}
+            />
+          </div>
+        )}
 
         <AutocompleteAddress onSourceSelect={handleSource} onDestinationSelect={handleDestination} />
 
