@@ -82,15 +82,6 @@ function Booking({ userlocation }) {
     }
   }, [user]);
 
-  // const [selectedCar, setSelectedCar] = useState();
-  // const [directionDataA, setDirectionDataA] = useState();
-
-
-  // const handleCarSelection = (carIndex, data) => {
-  //   setSelectedCar(carIndex);
-  //   setDirectionDataA(data);
-  // };
-
   const [source, setSource] = useState();
   const [destination, setDestination] = useState();
 
@@ -207,7 +198,6 @@ function Booking({ userlocation }) {
 
   return (
     <div className='p-5 '>
-      {/* <div>Hello, {user?.username} welcome to Clerk</div> */}
       <h2 className='text-[20px] font-semibold'>Booking</h2>
       <div className='border-[1px] p-5 
         rounded-md' >
@@ -223,6 +213,7 @@ function Booking({ userlocation }) {
               placeholder='Passenger Name'
               value={passengerName}
               onChange={handlePassengerNameChange}
+              className='mb-2'
             />
             <input
               type='tel'

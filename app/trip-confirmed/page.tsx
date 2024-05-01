@@ -72,6 +72,10 @@ function tripConfirm() {
                         <p className="font-semibold">Total Fare:</p>
                         <p>{trips.totalFare}</p>
                     </div>
+                    <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                        Pay Now
+                    </button>
+
                 </div>
             ) : (
                 <p>Loading trip details...</p>
